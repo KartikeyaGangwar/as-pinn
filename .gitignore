@@ -1,0 +1,35 @@
+﻿# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Manuscript and Paper Artifacts (Confidential)
+manuscript/
+*.pdf
+*.aux
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Compressed Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Scratch scripts and temporary test files
+scratch/
+smoke_plots/
+output_log.txt
+*.log
+
+# Pytest and Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+.tempmediaStorage/
+walkthrough.md
