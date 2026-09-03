@@ -250,6 +250,70 @@ def train_model_adamw_lbfgs(
     return history
 
 
+class PCGradOptimizer:
+    """PCGrad (Projecting Conflicting Gradients) optimizer wrapper."""
+    def __init__(self, optimizer: torch.optim.Optimizer):
+        self.optimizer = optimizer
+
+    def step(self, losses: List[torch.Tensor], model: nn.Module):
+        task_grads = []
+        for l in losses:
+            self.optimizer.zero_grad()
+            l.backward(retain_graph=True)
+            grads = [p.grad.clone() if p.grad is not None else torch.zeros_like(p) for p in model.parameters()]
+            task_grads.append(grads)
+
+        projected_grads = [copy.deepcopy(g) for g in task_grads]
+        num_tasks = len(losses)
+
+        for i in range(num_tasks):
+            for j in range(num_tasks):
+                if i != j:
+                    dot = sum(torch.sum(task_grads[i][k] * task_grads[j][k]) for k in range(len(task_grads[i])))
+                    if dot < 0:
+                        norm_sq = sum(torch.sum(task_grads[j][k] ** 2) for k in range(len(task_grads[j]))) + 1e-8
+                        proj = dot / norm_sq
+                        for k in range(len(projected_grads[i])):
+                            projected_grads[i][k] -= proj * task_grads[j][k]
+
+        self.optimizer.zero_grad()
+        for k, p in enumerate(model.parameters()):
+            p.grad = sum(projected_grads[i][k] for i in range(num_tasks))
+        self.optimizer.step()
+
+
+class CAGradOptimizer:
+    """CAGrad (Conflict-Averse Gradient Descent) optimizer wrapper."""
+    def __init__(self, optimizer: torch.optim.Optimizer, c: float = 0.5):
+        self.optimizer = optimizer
+        self.c = c
+
+    def step(self, losses: List[torch.Tensor], model: nn.Module):
+        device = next(model.parameters()).device
+        task_grads = []
+        for l in losses:
+            self.optimizer.zero_grad()
+            l.backward(retain_graph=True)
+            flat_g = torch.cat([(p.grad.view(-1) if p.grad is not None else torch.zeros(p.numel(), device=device)) for p in model.parameters()])
+            task_grads.append(flat_g)
+
+        G = torch.stack(task_grads, dim=0)
+        g_mean = torch.mean(G, dim=0)
+        GG = torch.mm(G, G.t())
+        g_0 = torch.mean(GG, dim=1)
+
+        alpha = torch.softmax(-g_0 / (torch.norm(g_mean) * self.c + 1e-8), dim=0)
+        g_cagrad = torch.mv(G.t(), alpha)
+
+        self.optimizer.zero_grad()
+        offset = 0
+        for p in model.parameters():
+            numel = p.numel()
+            p.grad = g_cagrad[offset:offset+numel].view_as(p)
+            offset += numel
+        self.optimizer.step()
+
+
 def train_pcgrad_baseline(
     pde,
     model: nn.Module,

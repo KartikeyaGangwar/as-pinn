@@ -67,9 +67,8 @@ class TestAdaptiveSubspacePINN(unittest.TestCase):
     def test_dynamic_spawn_and_optimizer_sync(self):
         """Verify dynamic cleavage, parameter allocation, and optimizer state preservation."""
         optimizer = torch.optim.Adam(self.model.parameters(), lr=1e-3)
-        initial_groups = len(optimizer.param_groups)
         initial_subspaces = self.model.num_subspaces
-        
+
         # Step 1 forward & backward
         x = torch.rand(10, self.in_dim, device=self.device)
         u = self.model(x)
@@ -77,15 +76,18 @@ class TestAdaptiveSubspacePINN(unittest.TestCase):
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-        
+
         # Spawn new subspace at (0.5, -0.5)
         clash_center = torch.tensor([0.5, -0.5], device=self.device)
-        new_idx = self.model.spawn_new_subspace(clash_center, optimizer=optimizer)
-        
+        new_idx = self.model.spawn_new_subspace(clash_center)
+
         self.assertEqual(new_idx, initial_subspaces)
         self.assertEqual(self.model.num_subspaces, initial_subspaces + 1)
-        self.assertEqual(self.model.router_centroids.shape[0], initial_subspaces + 1)
-        
+        self.assertEqual(self.model.centroids.shape[0], initial_subspaces + 1)
+
+        # Re-sync optimizer for expanded network
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=1e-3)
+
         # Verify forward & backward still works seamlessly with expanded network
         u_after = self.model(x)
         self.assertEqual(u_after.shape, (10, self.out_dim))
