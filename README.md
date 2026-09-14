@@ -4,11 +4,12 @@
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CUDA 11.8 / 12.1](https://img.shields.io/badge/CUDA-11.8%20%7C%2012.1-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0009--1973--7532-green.svg)](https://orcid.org/0009-0009-1973-7532)
 [![Paper: Peer-Review](https://img.shields.io/badge/Status-Submission%20Ready-brightgreen.svg)](#citation)
 
 **Official PyTorch Implementation** of the research paper:  
 > **Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
-> *Author:* **Kartikey Singh**  
+> *Author:* **Kartikey Singh** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeysingh525@protonmail.com`  
 > *Repository:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
