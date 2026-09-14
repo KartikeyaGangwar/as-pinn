@@ -1,4 +1,4 @@
-﻿# Adaptive $N$-Subspace Physics-Informed Neural Networks (AS-PINN)
+# Adaptive $N$-Subspace Physics-Informed Neural Networks (AS-PINN)
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
@@ -205,9 +205,10 @@ DOI: 10.5281/zenodo.22132799                             Target: IEEE TPAMI / CV
 ```
 
 1. **Act I: Algebraic Direct-Sum Partitioning (`null-space-pinn`):**  
-   *Title:* *"Decoupling Gradient Conflicts in Physics-Informed Neural Networks via Null-Space Parameter Subspaces"*  
-   *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static 2D boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
-   *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn) | *DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799)
+   *Title:* *"On Parameter Decoupling, Conditioning, and Interface Transmission in Multi-Objective Physics-Informed Neural Networks"*  
+   *Authors:* Kartikey Singh (University of Delhi) and Samarjeet Malik (IIT Jodhpur)  
+   *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static material boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
+   *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
 
 2. **Act II: Autonomous Dynamic Parameter AMR (`as-pinn`):**  
    *Title:* *"Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
