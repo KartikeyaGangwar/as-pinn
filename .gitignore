@@ -5,6 +5,7 @@ __pycache__/
 
 # Manuscript and Paper Artifacts (Confidential)
 manuscript/
+technical_review/
 *.pdf
 *.aux
 *.out

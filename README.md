@@ -9,7 +9,7 @@
 
 **Official PyTorch Implementation** of the research paper:  
 > **Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
-> *Author:* **Kartikey Singh** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
+> *Author:* **Kartikeya Gangwar** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeysingh525@protonmail.com`  
 > *Repository:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
@@ -172,10 +172,10 @@ model, history = trainer.train_stage2_production(
 If you use AS-PINN or our benchmarks in your research, please cite our manuscript:
 
 ```bibtex
-@article{singh2026aspinn,
+@article{gangwar2026aspinn,
   title   = {Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling},
-  author  = {Singh, Kartikey},
-  journal = {arXiv preprint},
+  author  = {Gangwar, Kartikeya},
+  journal = {Journal of Computational Physics (Under Review)},
   year    = {2026},
   url     = {https://github.com/KartikeyaGangwar/as-pinn}
 }
@@ -191,7 +191,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🏛️ The Adaptive Subspace (AS) Research Trilogy
 
-This repository forms the central scientific milestone of a cohesive three-act theoretical research program authored by **Kartikey Singh**, systematically resolving destructive gradient interference across parameter manifolds:
+This repository forms the central scientific milestone of a cohesive three-act theoretical research program authored by **Kartikeya Gangwar**, systematically resolving destructive gradient interference across parameter manifolds:
 
 ```
                   THE ADAPTIVE SUBSPACE (AS) PARADIGM
@@ -207,7 +207,7 @@ DOI: 10.5281/zenodo.22132799                             Target: IEEE TPAMI / CV
 
 1. **Act I: Algebraic Direct-Sum Partitioning (`null-space-pinn`):**  
    *Title:* *"On Parameter Decoupling, Conditioning, and Interface Transmission in Multi-Objective Physics-Informed Neural Networks"*  
-   *Authors:* Kartikey Singh (University of Delhi) and Samarjeet Malik (IIT Jodhpur)  
+   *Authors:* Kartikeya Gangwar (University of Delhi) and Samarjeet Malik (IIT Jodhpur)  
    *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static material boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
    *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
 
