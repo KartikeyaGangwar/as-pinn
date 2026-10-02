@@ -6,12 +6,15 @@
 [![CUDA 11.8 / 12.1](https://img.shields.io/badge/CUDA-11.8%20%7C%2012.1-76B900.svg)](https://developer.nvidia.com/cuda-toolkit)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0009--1973--7532-green.svg)](https://orcid.org/0009-0009-1973-7532)
 [![Paper: Peer-Review](https://img.shields.io/badge/Status-Submission%20Ready-brightgreen.svg)](#citation)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22822521-0298c3.svg)](https://doi.org/10.5281/zenodo.22822521)
+[![Preprint: Open Access](https://img.shields.io/badge/Preprint-Open%20Access-success.svg)](https://doi.org/10.5281/zenodo.22822521)
 
 **Official PyTorch Implementation** of the research paper:  
 > **Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
 > *Author:* **Kartikeya Gangwar** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeyagangwar@proton.me`  
+> *Preprint (Open Access):* [https://doi.org/10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521)  
 > *Repository:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
 
 ---
@@ -177,7 +180,8 @@ If you use AS-PINN or our benchmarks in your research, please cite our manuscrip
   author  = {Gangwar, Kartikeya},
   journal = {Journal of Computational Physics (Under Review)},
   year    = {2026},
-  url     = {https://github.com/KartikeyaGangwar/as-pinn}
+  doi     = {10.5281/zenodo.22822521},
+  url     = {https://doi.org/10.5281/zenodo.22822521}
 }
 ```
 
@@ -202,7 +206,7 @@ This repository forms the central scientific milestone of a cohesive three-act t
 Null-Space PINN             AS-PINN (This Repo)          AS-ViT
 (Algebraic Direct-Sum)      (Autonomous PDE AMR)         (Feature-Space MoE)
 [null-space-pinn]           [as-pinn]                    [as-vit-multitask]
-DOI: 10.5281/zenodo.22132799                             Target: IEEE TPAMI / CVPR
+DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / CVPR
 ```
 
 1. **Act I: Algebraic Direct-Sum Partitioning (`null-space-pinn`):**  
@@ -214,7 +218,7 @@ DOI: 10.5281/zenodo.22132799                             Target: IEEE TPAMI / CV
 2. **Act II: Autonomous Dynamic Parameter AMR (`as-pinn`):**  
    *Title:* *"Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
    *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR). Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
-   *Repo:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
+   *Target:* Journal of Computational Physics (JCP) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
 
 3. **Act III: Foundational Vision Transformers & MoE (`as-vit-multitask`):**  
    *Title:* *"AS-ViT: Adaptive Subspace Vision Transformers with Autonomous Gradient-Clash Routing for Multi-Task Learning"*  
