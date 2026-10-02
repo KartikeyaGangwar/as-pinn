@@ -11,7 +11,7 @@
 > **Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
 > *Author:* **Kartikeya Gangwar** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
-> *Correspondence:* `kartikeysingh525@protonmail.com`  
+> *Correspondence:* `kartikeyagangwar@proton.me`  
 > *Repository:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
 
 ---
