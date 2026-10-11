@@ -15,7 +15,7 @@
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeyagangwar@proton.me`  
 > *Preprint (Open Access):* [https://doi.org/10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521)  
-> *Repository:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
+> *Repository:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
 
 ---
 
@@ -129,8 +129,8 @@ Adaptive_N_Subspace_PINN/
 ### 1. Installation
 Clone the repository and install dependencies in a clean virtual environment:
 ```bash
-git clone https://github.com/KartikeyaGangwar/as-pinn.git
-cd as-pinn
+git clone https://github.com/KartikeyaGangwar/atlas-neural-amr.git
+cd atlas-neural-amr
 pip install -r requirements.txt
 ```
 
@@ -205,7 +205,7 @@ This repository forms the central scientific milestone of a cohesive three-act t
 [ACT I: STATIC PHYSICAL]    [ACT II: DYNAMIC AMR]        [ACT III: FOUNDATIONAL CV]
 Null-Space PINN             ATLAS (This Repo)            AS-ViT
 (Algebraic Direct-Sum)      (Adaptive Subspace AMR)      (Feature-Space MoE)
-[null-space-pinn]           [as-pinn / ATLAS]            [as-vit-multitask]
+[null-space-pinn]           [atlas-neural-amr]           [as-vit-multitask]
 DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / CVPR
 ```
 
@@ -218,7 +218,7 @@ DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / C
 2. **Act II: Autonomous Dynamic Parameter AMR (`ATLAS`):**  
    *Title:* *"ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
    *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR) under the Adaptive Subspace Neural Network (ASNN) paradigm. Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
-   *Target:* Journal of Computational Physics (JCP) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
+   *Target:* Journal of Computational Physics (JCP) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
 
 3. **Act III: Foundational Vision Transformers & MoE (`as-vit-multitask`):**  
    *Title:* *"AS-ViT: Adaptive Subspace Vision Transformers with Autonomous Gradient-Clash Routing for Multi-Task Learning"*  
