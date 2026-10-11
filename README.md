@@ -15,6 +15,7 @@
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeyagangwar@proton.me`  
 > *Preprint (Open Access):* [https://doi.org/10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521)  
+> *Target Journal:* Computer Methods in Applied Mechanics and Engineering (CMAME)  
 > *Repository:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
 
 ---
@@ -213,12 +214,12 @@ DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / C
    *Title:* *"On Parameter Decoupling, Conditioning, and Interface Transmission in Multi-Objective Physics-Informed Neural Networks"*  
    *Authors:* Kartikeya Gangwar (University of Delhi) and Samarjeet Malik (IIT Jodhpur)  
    *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static material boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
-   *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
+   *Status:* Under Peer Review at Journal of Computational Physics (JCP) (`JCOMP-D-26-03600`) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
 
 2. **Act II: Autonomous Dynamic Parameter AMR (`ATLAS`):**  
    *Title:* *"ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
    *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR) under the Adaptive Subspace Neural Network (ASNN) paradigm. Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
-   *Target:* Journal of Computational Physics (JCP) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
+   *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
 
 3. **Act III: Foundational Vision Transformers & MoE (`as-vit-multitask`):**  
    *Title:* *"AS-ViT: Adaptive Subspace Vision Transformers with Autonomous Gradient-Clash Routing for Multi-Task Learning"*  
