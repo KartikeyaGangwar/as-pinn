@@ -396,7 +396,7 @@ def plot_pou_overlap_profile(pde_key, pde_name, pde, aspinn, stage1_info, save_p
 
 def run_master_suite(custom_benchmarks=None):
     print("="*105)
-    print("      ADAPTIVE N-SUBSPACE PINN (AS-PINN) — 9-PDE MASTER BENCHMARK SUITE")
+    print("      ATLAS: ADAPTIVE N-SUBSPACE PINN — 9-PDE BENCHMARK SUITE")
     print("="*105)
     
     set_seed(42)
@@ -519,7 +519,7 @@ def run_master_suite(custom_benchmarks=None):
             writer.writeheader()
             writer.writerows(results)
             
-    print("\n>>> Rendering Master 9-PDE Subspaces Grid Plot (3x3)...")
+    print("\n>>> Rendering Subspaces Summary Grid Plot Across 9 Benchmarks (3x3)...")
     fig, axes = plt.subplots(3, 3, figsize=(20, 18))
     axes_flat = axes.ravel()
     
@@ -581,18 +581,18 @@ def run_master_suite(custom_benchmarks=None):
         ax.set_title(f"{rec['pde_name']} ($N^*={num_s}$)", fontweight="bold", fontsize=12)
         idx += 1
         
-    fig.suptitle("AS-PINN Autonomous Subspace Partition Architecture Across All 9 Benchmark PDEs", fontsize=18, fontweight="bold", y=0.995)
+    fig.suptitle("ATLAS Autonomous Subspace Partition Architecture Across All 9 Benchmark PDEs", fontsize=18, fontweight="bold", y=0.995)
     plt.tight_layout()
     all_sub_path = "results/plots/all_subspaces_summary.png"
     fig.savefig(all_sub_path, bbox_inches="tight")
     fig.savefig("manuscript/all_subspaces_summary.png", bbox_inches="tight")
     plt.close(fig)
-    print(f"  [+] Saved Master 9-PDE Subspaces Grid: {all_sub_path}")
+    print(f"  [+] Saved Subspaces Summary Grid: {all_sub_path}")
     
     print("\n" + "="*115)
     print("                              FINAL 4-WAY BENCHMARK SUMMARY (TOTAL LOSS L(Theta))")
     print("="*115)
-    print(f"{'PDE Benchmark':<42} | {'Standard PINN':<18} | {'PCGrad':<18} | {'CAGrad':<18} | {'Proposed AS-PINN':<20}")
+    print(f"{'PDE Benchmark':<42} | {'Standard PINN':<18} | {'PCGrad':<18} | {'CAGrad':<18} | {'Proposed ATLAS':<20}")
     print("-"*115)
     for r in results:
         pde_str = r['benchmark']

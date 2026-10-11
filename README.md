@@ -27,7 +27,7 @@ Physics-Informed Neural Networks (PINNs) have emerged as a cornerstone for solvi
 2. **Spectral Bias & High-Frequency Attenuation:** Neural networks preferentially fit low-frequency modes, failing to capture high-frequency wave oscillations or thin shock layers.
 3. **The Exponential Curse of Dimensionality:** Existing domain decomposition methods (e.g., XPINNs, FBPINNs) rely on rigid rectilinear grids requiring $\mathcal{O}(K^d)$ distinct networks, which becomes computationally intractable in $d \ge 4$ dimensions.
 
-**ATLAS** resolves these bottlenecks by introducing **Parameter-Space Adaptive Mesh Refinement (AMR)** under the **Adaptive Subspace Neural Network (ASNN)** paradigm:
+**ATLAS** resolves these bottlenecks by introducing **Parameter-Space Adaptive Mesh Refinement (AMR)** under the **Adaptive Subspace Neural Network (ASNN)** framework:
 - **Vectorized Gram Alignment Profiling:** Evaluates per-sample gradient alignment matrices $\mathcal{G}_{ij} = \cos \angle(\mathbf{g}_i, \mathbf{g}_j)$ using batched reverse-mode automatic differentiation (`torch.func.vmap`) with zero Python-loop overhead.
 - **Autonomous Zero-Disruption Parameter Cleavage:** Automatically spawns and centers new localized parameter subspaces at regions of severe destructive gradient interference with provable solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$).
 - **Dimension-Normalized Anisotropic Bandwidth Matrix:** Scales coordinate distance by dimension-specific bounds $\boldsymbol{\Sigma}_k = \operatorname{diag}(\sigma_1^2, \dots, \sigma_d^2)$, unblocking temporal cleavage in convection-dominated transport.
@@ -35,11 +35,11 @@ Physics-Informed Neural Networks (PINNs) have emerged as a cornerstone for solvi
 
 ---
 
-## 📊 Master 9-Benchmark Quantitative Matrix
+## 📊 Quantitative Evaluation Across 9 Benchmark Systems
 
 All experiments were evaluated under standardized dense collocation meshes ($N_{\text{col}} = 10,000$), first-order AdamW with dynamic adaptive loss weighting, followed by full second-order Quasi-Newton Combined Global L-BFGS polish (Strong Wolfe line search).
 
-| Benchmark System | Domain & PDE Type | Standard PINN | PCGrad (NeurIPS'20) | CAGrad (NeurIPS'21) | **ATLAS (Ours)** | Discovered $N^*$ | Relative $L^2$ Error | ATLAS Advantage |
+| Benchmark System | Domain & PDE Type | Standard PINN | PCGrad (NeurIPS'20) | CAGrad (NeurIPS'21) | **ATLAS (Ours)** | Discovered $N^*$ | Relative $L^2$ Error | Relative Loss Improvement |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Burgers 1D** | 1D Shock ($\nu = 0.01/\pi$) | $2.70 \times 10^{-1}$ | $6.10 \times 10^{0}$ | $1.03 \times 10^{1}$ | $\mathbf{5.37 \times 10^{-2}}$ | $N^*=7$ | $60.8\%$ | **$5.0\times$ lower loss** |
 | **Convection 2D** | Advection ($\boldsymbol{\beta}=(10, 10)$) | $1.71 \times 10^{0}$ | $4.58 \times 10^{0}$ | $9.83 \times 10^{0}$ | $\mathbf{1.69 \times 10^{-2}}$ | $N^*=22$ | **$3.24\%$** | **$100.6\times$ lower loss** ($18.2\times$ better $L^2$) |
@@ -179,7 +179,7 @@ If you use ATLAS or our benchmarks in your research, please cite our manuscript:
 @article{gangwar2026atlas,
   title   = {ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling},
   author  = {Gangwar, Kartikeya},
-  journal = {Journal of Computational Physics (Under Review)},
+  journal = {Computer Methods in Applied Mechanics and Engineering (Submitted)},
   year    = {2026},
   doi     = {10.5281/zenodo.22822521},
   url     = {https://doi.org/10.5281/zenodo.22822521}
@@ -191,37 +191,36 @@ If you use ATLAS or our benchmarks in your research, please cite our manuscript:
 ## 📄 License
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-
 ---
 
-## 🏛️ The Adaptive Subspace (AS) Research Trilogy
+## 🏛️ Related Frameworks and Research Program
 
-This repository forms the central scientific milestone of a cohesive three-act theoretical research program authored by **Kartikeya Gangwar**, systematically resolving destructive gradient interference across parameter manifolds:
+This repository forms part of a cohesive theoretical research program authored by **Kartikeya Gangwar**, investigating parameter-space decomposition and gradient interference mitigation across scientific computing and machine learning architectures:
 
 ```
-                  THE ADAPTIVE SUBSPACE (AS) PARADIGM
+                  PARAMETER DECOMPOSITION FRAMEWORKS
                                    │
   ┌────────────────────────────────┼────────────────────────────────┐
   ▼                                ▼                                ▼
-[ACT I: STATIC PHYSICAL]    [ACT II: DYNAMIC AMR]        [ACT III: FOUNDATIONAL CV]
-Null-Space PINN             ATLAS (This Repo)            AS-ViT
-(Algebraic Direct-Sum)      (Adaptive Subspace AMR)      (Feature-Space MoE)
-[null-space-pinn]           [atlas-neural-amr]           [as-vit-multitask]
-DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / CVPR
+[Static Boundary Decoupling] [Autonomous Parameter AMR]   [Multi-Task Vision Routing]
+Null-Space PINN              ATLAS (This Work)           AS-ViT
+(Algebraic Direct-Sum)       (Adaptive Subspace AMR)     (Feature-Space Expert Routing)
+[null-space-pinn]            [atlas-neural-amr]          [as-vit-multitask]
+JCP (Under Review)           CMAME (Submitted)           Preprint / In Development
 ```
 
-1. **Act I: Algebraic Direct-Sum Partitioning (`null-space-pinn`):**  
+1. **Static Boundary Decoupling via Direct-Sum Partitioning (`null-space-pinn`):**  
    *Title:* *"On Parameter Decoupling, Conditioning, and Interface Transmission in Multi-Objective Physics-Informed Neural Networks"*  
    *Authors:* Kartikeya Gangwar (University of Delhi) and Samarjeet Malik (IIT Jodhpur)  
    *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static material boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
    *Status:* Under Peer Review at Journal of Computational Physics (JCP) (`JCOMP-D-26-03600`) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
 
-2. **Act II: Autonomous Dynamic Parameter AMR (`ATLAS`):**  
+2. **Autonomous Dynamic Parameter-Space AMR (`ATLAS`, This Work):**  
    *Title:* *"ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
-   *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR) under the Adaptive Subspace Neural Network (ASNN) paradigm. Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
-   *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
+   *Focus:* Formulates autonomous parameter-space Adaptive Mesh Refinement (AMR) under the Adaptive Subspace Neural Network (ASNN) framework. Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
+   *Status:* Submitted to Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/atlas-neural-amr](https://github.com/KartikeyaGangwar/atlas-neural-amr)
 
-3. **Act III: Foundational Vision Transformers & MoE (`as-vit-multitask`):**  
+3. **Multi-Task Latent Manifold Routing (`as-vit-multitask`):**  
    *Title:* *"AS-ViT: Adaptive Subspace Vision Transformers with Autonomous Gradient-Clash Routing for Multi-Task Learning"*  
-   *Focus:* Transcends physical PDE space into the latent token manifold of Vision Transformers. Eliminates negative transfer in multi-task perception (segmentation, depth, surface normals) by continuously tracking inter-task Gram matrix eigenvalues ($\lambda_{\min}(\mathcal{G}) < -\tau_{\text{conflict}}$) and dynamically spawning expert subspaces via Feature-Conditioned Partition of Unity (PoU) gating.  
-   *Repo:* [https://github.com/KartikeyaGangwar/as-vit-multitask](https://github.com/KartikeyaGangwar/as-vit-multitask) | *Target:* IEEE TPAMI / CVPR
+   *Focus:* Extends localized subspace partitioning from physical coordinate domains to the latent token representations of Vision Transformers. Mitigates negative transfer across multi-task vision objectives (segmentation, depth, surface normals) by monitoring the inter-task Gram matrix spectrum and dynamically routing tokens via Feature-Conditioned Partition of Unity (PoU) gating.  
+   *Repo:* [https://github.com/KartikeyaGangwar/as-vit-multitask](https://github.com/KartikeyaGangwar/as-vit-multitask)
