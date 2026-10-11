@@ -27,7 +27,8 @@ def cleanup_gpu():
 
 class TwoStageASPINNTrainer:
     """
-    Two-Stage Adaptive N-Subspace PINN Trainer (AS-PINN).
+    Two-Stage ATLAS / ASNN Discovery & Deployment Trainer.
+    (Also accessible via TwoStageATLASTrainer alias)
     
     100% Pure Physics-Adaptive Autonomous Stopping:
       - Active-Domain Support Profiling (subspaces profile only their active region psi_k > 0.10).

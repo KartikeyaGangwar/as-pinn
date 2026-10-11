@@ -5,8 +5,9 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 class ContinuousConflictMonitor:
     """
-    Continuous Intra-Subspace Gradient Conflict Monitor for AS-PINN.
+    Continuous Intra-Subspace Gradient Conflict Monitor for ATLAS / ASNN.
     
+    Autonomous manifold cleavage monitor based on vectorized intra-subspace gradient conflicts.
     Uses PyTorch's native `torch.func` (vmap + grad / functional_call) to compute
     batched per-sample parameter gradients efficiently on GPU, constructing the
     intra-subspace pairwise cosine similarity Gram matrix C in O(1) vectorized kernel passes.

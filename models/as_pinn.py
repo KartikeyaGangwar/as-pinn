@@ -52,16 +52,22 @@ class SubspaceMLP(nn.Module):
 
 class AdaptiveSubspacePINN(nn.Module):
     """
-    Adaptive N-Subspace Physics-Informed Neural Network (AS-PINN).
+    ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces.
+    Canonical neural architecture for Adaptive Subspace Neural Networks (ASNN / AS-PINN).
     
-    Architecture:
-      u(x) = sum_{k=1}^N psi_k(x) * Phi_k( (x - c_k) / sigma_k )
+    Mathematical Formulation:
+      u(x) = sum_{k=1}^N psi_k(x) * Phi_k( Sigma_k^{-1} (x - c_k) )
       
-    Key Features:
-      - Symmetric Voronoi Partition of Unity (PoU): Equal gradient authority across all N* subspaces.
-      - Localized Coordinate Centering: Each subspace receives zero-centered inputs in its local frame.
-      - Disjoint Parameter Subspaces: Zero inter-subspace gradient clashing; quasi-block-diagonal Hessian.
-      - Two-Stage Discovery & Deployment: Autonomous Stage 1 AMR topology discovery followed by clean Stage 2 training.
+    Key Architectural Properties:
+      - Anisotropic Mahalanobis Partition of Unity (PoU):
+        Equal gradient authority across all N active subspaces with anisotropic metric tensors.
+      - Localized Coordinate Centering:
+        Each subspace receives strictly zero-centered inputs in its local moving frame.
+      - Disjoint Parameter Subspaces:
+        Zero inter-subspace parameter gradient clashing; quasi-block-diagonal Gauss-Newton Hessian.
+      - Two-Stage Autonomous AMR:
+        Stage 1 autonomous topology discovery via vectorized gradient conflict profiling,
+        followed by high-precision Stage 2 training and second-order L-BFGS polish.
     """
     def __init__(
         self,

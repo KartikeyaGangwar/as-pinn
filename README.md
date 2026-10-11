@@ -38,7 +38,7 @@ Physics-Informed Neural Networks (PINNs) have emerged as a cornerstone for solvi
 
 All experiments were evaluated under standardized dense collocation meshes ($N_{\text{col}} = 10,000$), first-order AdamW with dynamic adaptive loss weighting, followed by full second-order Quasi-Newton Combined Global L-BFGS polish (Strong Wolfe line search).
 
-| Benchmark System | Domain & PDE Type | Standard PINN | PCGrad (NeurIPS'20) | CAGrad (NeurIPS'21) | **AS-PINN (Ours)** | Discovered $N^*$ | Relative $L^2$ Error | AS-PINN Advantage |
+| Benchmark System | Domain & PDE Type | Standard PINN | PCGrad (NeurIPS'20) | CAGrad (NeurIPS'21) | **ATLAS (Ours)** | Discovered $N^*$ | Relative $L^2$ Error | ATLAS Advantage |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Burgers 1D** | 1D Shock ($\nu = 0.01/\pi$) | $2.70 \times 10^{-1}$ | $6.10 \times 10^{0}$ | $1.03 \times 10^{1}$ | $\mathbf{5.37 \times 10^{-2}}$ | $N^*=7$ | $60.8\%$ | **$5.0\times$ lower loss** |
 | **Convection 2D** | Advection ($\boldsymbol{\beta}=(10, 10)$) | $1.71 \times 10^{0}$ | $4.58 \times 10^{0}$ | $9.83 \times 10^{0}$ | $\mathbf{1.69 \times 10^{-2}}$ | $N^*=22$ | **$3.24\%$** | **$100.6\times$ lower loss** ($18.2\times$ better $L^2$) |
