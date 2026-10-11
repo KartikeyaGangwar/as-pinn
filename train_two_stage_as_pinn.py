@@ -445,3 +445,8 @@ class TwoStageASPINNTrainer:
         }
         cleanup_gpu()
         return model, summary
+
+
+# Canonical Architectural Aliases
+TwoStageATLASTrainer = TwoStageASPINNTrainer
+

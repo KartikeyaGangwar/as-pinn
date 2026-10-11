@@ -187,3 +187,10 @@ class AdaptiveSubspacePINN(nn.Module):
         
         new_idx = len(self.subspaces) - 1
         return new_idx
+
+
+# Canonical Architectural Aliases
+ATLAS = AdaptiveSubspacePINN
+ASNN = AdaptiveSubspacePINN
+ASPINN = AdaptiveSubspacePINN
+

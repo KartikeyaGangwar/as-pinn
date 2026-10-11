@@ -1,4 +1,4 @@
-# Adaptive $N$-Subspace Physics-Informed Neural Networks (AS-PINN)
+# ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
@@ -10,7 +10,7 @@
 [![Preprint: Open Access](https://img.shields.io/badge/Preprint-Open%20Access-success.svg)](https://doi.org/10.5281/zenodo.22822521)
 
 **Official PyTorch Implementation** of the research paper:  
-> **Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
+> **ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling**  
 > *Author:* **Kartikeya Gangwar** ([ORCID: 0009-0009-1973-7532](https://orcid.org/0009-0009-1973-7532))  
 > *Affiliation:* Department of Mathematics, University of Delhi, Delhi 110007, India  
 > *Correspondence:* `kartikeyagangwar@proton.me`  
@@ -26,7 +26,7 @@ Physics-Informed Neural Networks (PINNs) have emerged as a cornerstone for solvi
 2. **Spectral Bias & High-Frequency Attenuation:** Neural networks preferentially fit low-frequency modes, failing to capture high-frequency wave oscillations or thin shock layers.
 3. **The Exponential Curse of Dimensionality:** Existing domain decomposition methods (e.g., XPINNs, FBPINNs) rely on rigid rectilinear grids requiring $\mathcal{O}(K^d)$ distinct networks, which becomes computationally intractable in $d \ge 4$ dimensions.
 
-**AS-PINN** resolves these bottlenecks by introducing **Parameter-Space Adaptive Mesh Refinement (AMR)**:
+**ATLAS** resolves these bottlenecks by introducing **Parameter-Space Adaptive Mesh Refinement (AMR)** under the **Adaptive Subspace Neural Network (ASNN)** paradigm:
 - **Vectorized Gram Alignment Profiling:** Evaluates per-sample gradient alignment matrices $\mathcal{G}_{ij} = \cos \angle(\mathbf{g}_i, \mathbf{g}_j)$ using batched reverse-mode automatic differentiation (`torch.func.vmap`) with zero Python-loop overhead.
 - **Autonomous Zero-Disruption Parameter Cleavage:** Automatically spawns and centers new localized parameter subspaces at regions of severe destructive gradient interference with provable solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$).
 - **Dimension-Normalized Anisotropic Bandwidth Matrix:** Scales coordinate distance by dimension-specific bounds $\boldsymbol{\Sigma}_k = \operatorname{diag}(\sigma_1^2, \dots, \sigma_d^2)$, unblocking temporal cleavage in convection-dominated transport.
@@ -172,11 +172,11 @@ model, history = trainer.train_stage2_production(
 
 ## 📖 Citation
 
-If you use AS-PINN or our benchmarks in your research, please cite our manuscript:
+If you use ATLAS or our benchmarks in your research, please cite our manuscript:
 
 ```bibtex
-@article{gangwar2026aspinn,
-  title   = {Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling},
+@article{gangwar2026atlas,
+  title   = {ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling},
   author  = {Gangwar, Kartikeya},
   journal = {Journal of Computational Physics (Under Review)},
   year    = {2026},
@@ -203,9 +203,9 @@ This repository forms the central scientific milestone of a cohesive three-act t
   ┌────────────────────────────────┼────────────────────────────────┐
   ▼                                ▼                                ▼
 [ACT I: STATIC PHYSICAL]    [ACT II: DYNAMIC AMR]        [ACT III: FOUNDATIONAL CV]
-Null-Space PINN             AS-PINN (This Repo)          AS-ViT
-(Algebraic Direct-Sum)      (Autonomous PDE AMR)         (Feature-Space MoE)
-[null-space-pinn]           [as-pinn]                    [as-vit-multitask]
+Null-Space PINN             ATLAS (This Repo)            AS-ViT
+(Algebraic Direct-Sum)      (Adaptive Subspace AMR)      (Feature-Space MoE)
+[null-space-pinn]           [as-pinn / ATLAS]            [as-vit-multitask]
 DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / CVPR
 ```
 
@@ -215,9 +215,9 @@ DOI: 10.5281/zenodo.22132799 DOI: 10.5281/zenodo.22822521 Target: IEEE TPAMI / C
    *Focus:* Proves structural gradient orthogonality ($\langle \nabla\mathcal{L}_{\mathrm{if}}, \nabla\mathcal{L}_{\mathrm{des}} \rangle \equiv 0$) on static material boundaries via $C^2$ Quintic Hermite operators and frozen orthogonal projection bases ($\Theta = \Theta_0 \oplus \Theta_1$, $\mathcal{W}_0 \mathcal{W}_1^T = \mathbf{0}$).  
    *Target:* Computer Methods in Applied Mechanics and Engineering (CMAME) | *Preprint DOI:* [10.5281/zenodo.22132799](https://doi.org/10.5281/zenodo.22132799) | *Repo:* [https://github.com/KartikeyaGangwar/null-space-pinn](https://github.com/KartikeyaGangwar/null-space-pinn)
 
-2. **Act II: Autonomous Dynamic Parameter AMR (`as-pinn`):**  
-   *Title:* *"Adaptive $N$-Subspace Physics-Informed Neural Networks: Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
-   *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR). Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
+2. **Act II: Autonomous Dynamic Parameter AMR (`ATLAS`):**  
+   *Title:* *"ATLAS: Adaptive Tiling of Localized Anisotropic Subspaces for Autonomous Parameter-Space AMR via Vectorized Gradient Conflict Profiling"*  
+   *Focus:* Generalizes static partitioning into dynamic, autonomous parameter-space Adaptive Mesh Refinement (AMR) under the Adaptive Subspace Neural Network (ASNN) paradigm. Uses vectorized Gram conflict matrices (`torch.func.vmap`) to trigger autonomous subspace fission with exact zero-disruption solution invariance ($\|u^{(N+1)} - u^{(N)}\| \equiv 0$) across 9 canonical PDEs.  
    *Target:* Journal of Computational Physics (JCP) | *Preprint DOI:* [10.5281/zenodo.22822521](https://doi.org/10.5281/zenodo.22822521) | *Repo:* [https://github.com/KartikeyaGangwar/as-pinn](https://github.com/KartikeyaGangwar/as-pinn)
 
 3. **Act III: Foundational Vision Transformers & MoE (`as-vit-multitask`):**  

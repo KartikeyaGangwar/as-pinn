@@ -96,5 +96,16 @@ class TestAdaptiveSubspacePINN(unittest.TestCase):
         optimizer.step()
         print("[Test] Dynamic subspace spawn and optimizer synchronization passed (PASSED)")
 
+    def test_atlas_architectural_aliases(self):
+        """Verify ATLAS and ASNN architectural interfaces and aliases."""
+        from models.atlas import ATLAS, ASNN
+        atlas_model = ATLAS(in_dim=2, out_dim=1, initial_subspaces=2).to(self.device)
+        self.assertIsInstance(atlas_model, AdaptiveSubspacePINN)
+        self.assertEqual(atlas_model.num_subspaces, 2)
+        x = torch.rand(5, 2, device=self.device)
+        out = atlas_model(x)
+        self.assertEqual(out.shape, (5, 1))
+        print("[Test] ATLAS architectural alias test passed (PASSED)")
+
 if __name__ == "__main__":
     unittest.main()

@@ -336,3 +336,8 @@ class ContinuousConflictMonitor:
         self.ema_conflict_score[subspace_idx] = 0.5
         self.ema_clash_ratio[subspace_idx] = 0.0
 
+
+# Canonical Architectural Aliases
+VectorizedGradientConflictMonitor = ContinuousConflictMonitor
+
+
