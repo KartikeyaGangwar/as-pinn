@@ -12,6 +12,12 @@ Gracefully falls back to sequential single-device execution if < 2 GPUs are dete
 
 import os
 import sys
+
+# Ensure repository root is on sys.path regardless of execution working directory
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 import time
 import json
 import csv
@@ -106,21 +112,22 @@ def run_parallel_suite():
         print(f"[*] Worker 1 [GPU 1] executing: {pdes_gpu1}")
         print("="*115)
         
+        script_path = os.path.join(REPO_ROOT, "benchmarks", "run_master_benchmarks.py")
         cmd0 = [
-            sys.executable, "-u", "benchmarks/run_master_benchmarks.py",
+            sys.executable, "-u", script_path,
             "--device", "cuda:0",
             "--pdes", pdes_gpu0,
             "--skip-summary-grid"
         ]
         cmd1 = [
-            sys.executable, "-u", "benchmarks/run_master_benchmarks.py",
+            sys.executable, "-u", script_path,
             "--device", "cuda:1",
             "--pdes", pdes_gpu1,
             "--skip-summary-grid"
         ]
         
-        p0 = subprocess.Popen(cmd0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-        p1 = subprocess.Popen(cmd1, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        p0 = subprocess.Popen(cmd0, cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        p1 = subprocess.Popen(cmd1, cwd=REPO_ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
         
         t0 = threading.Thread(target=stream_reader, args=(p0.stdout, "GPU 0"))
         t1 = threading.Thread(target=stream_reader, args=(p1.stdout, "GPU 1"))
@@ -146,8 +153,9 @@ def run_parallel_suite():
         print(f"[*] Executing full 9-PDE benchmark suite sequentially...")
         print("="*115)
         
-        cmd = [sys.executable, "-u", "benchmarks/run_master_benchmarks.py"]
-        ret = subprocess.call(cmd)
+        script_path = os.path.join(REPO_ROOT, "benchmarks", "run_master_benchmarks.py")
+        cmd = [sys.executable, "-u", script_path]
+        ret = subprocess.call(cmd, cwd=REPO_ROOT)
         if ret != 0:
             print(f"[!] Benchmark execution returned non-zero exit code: {ret}")
             sys.exit(ret)

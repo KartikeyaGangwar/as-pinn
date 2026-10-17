@@ -15,7 +15,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-sys.path.insert(0, os.path.abspath('.'))
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+if os.path.abspath('.') not in sys.path:
+    sys.path.insert(0, os.path.abspath('.'))
 from physics.burgers import Burgers1D
 from physics.convection2d import HighPecletConvection2D
 from physics.quantum_schrodinger import QuantumNonlinearSchrodinger2D
