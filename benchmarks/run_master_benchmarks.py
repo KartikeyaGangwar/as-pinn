@@ -90,7 +90,7 @@ def plot_individual_convergence(pde_key, pde_name, hist_pinn, hist_pcg, hist_cag
         ax.semilogy(hist_cag["epoch"][:n_ca], hist_cag["loss"][:n_ca], label=r"$\mathbf{CAGrad}\ (\mathrm{Liu\ et\ al.})$", color="#2ca02c", linewidth=2.0)
     if hist_as and "loss_total" in hist_as and len(hist_as["loss_total"]) > 0:
         n_as = min(len(hist_as["epoch"]), len(hist_as["loss_total"]))
-        ax.semilogy(hist_as["epoch"][:n_as], hist_as["loss_total"][:n_as], label=r"$\mathbf{Proposed\ AS-PINN}\ (\mathrm{Ours})$", color="#d62728", linewidth=2.5)
+        ax.semilogy(hist_as["epoch"][:n_as], hist_as["loss_total"][:n_as], label=r"$\mathbf{Proposed\ ATLAS}\ (\mathrm{Ours})$", color="#d62728", linewidth=2.5)
         
     ax.set_title(f"Total Loss Convergence $\\mathcal{{L}}(\\Theta)$: {pde_name}", fontweight="bold", pad=12)
     ax.set_xlabel("Optimization Epochs / Evaluations (AdamW + L-BFGS Polish)")
@@ -202,13 +202,13 @@ def plot_solutions_comparison(pde_key, pde_name, pde, pinn, pcg, cag, aspinn, sa
     else:
         vmin, vmax = float(np.min(ref_u)), float(np.max(ref_u))
     
-    fig, axes = plt.subplots(1, 5, figsize=(22, 4.4), sharey=True)
+    fig, axes = plt.subplots(1, 5, figsize=(22, 4.2), sharey=True)
     models_data = [
-        (r"$\mathbf{Ground\ Truth\ } u^*(\mathbf{x})$" if u_exact is not None else r"$\mathbf{Analytical\ Reference}$", u_exact if u_exact is not None else u_as),
-        (r"$\mathbf{Standard\ PINN}$", u_pinn),
-        (r"$\mathbf{PCGrad\ Baseline}$", u_pcg),
-        (r"$\mathbf{CAGrad\ Baseline}$", u_cag),
-        (r"$\mathbf{Proposed\ AS-PINN\ (Ours)}$", u_as),
+        (r"$\mathbf{(a)\ Ground\ Truth\ } u^*(\mathbf{x})$" if u_exact is not None else r"$\mathbf{(a)\ Analytical\ Reference}$", u_exact if u_exact is not None else u_as),
+        (r"$\mathbf{(b)\ Standard\ PINN}$", u_pinn),
+        (r"$\mathbf{(c)\ PCGrad\ Baseline}$", u_pcg),
+        (r"$\mathbf{(d)\ CAGrad\ Baseline}$", u_cag),
+        (r"$\mathbf{(e)\ Proposed\ ATLAS\ (Ours)}$", u_as),
     ]
     
     n_levels = 120 if pde_key == "burgers1d" else 100
@@ -230,7 +230,7 @@ def plot_solutions_comparison(pde_key, pde_name, pde, pinn, pcg, cag, aspinn, sa
     field_label = r"$\mathrm{Probability\ Density\ } |\psi|^2$" if pde_key == "quantum_nls" else r"$\mathrm{Field\ Solution\ } u$"
     cbar.set_label(field_label, fontweight="bold")
     
-    fig.suptitle(f"{pde_name} — 5-Way Solution Comparison", fontsize=15, fontweight="bold", y=1.02)
+    # In accordance with Nicolas Rougier's rules, omit suptitle banner; caption describes the figure
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     print(f"    [+] Saved Solutions Comparison: {save_path}")
@@ -506,6 +506,48 @@ def run_master_suite(custom_benchmarks=None):
         p4_res = os.path.join("results/plots", f"{pde_key}_pou_profile.png")
         plot_pou_overlap_profile(pde_key, pde_name, pde, aspinn_model, stage1_info, p4_res)
         shutil.copy(p4_res, os.path.join("manuscript", f"{pde_key}_pou_profile.png"))
+
+        # --- SAVE CHECKPOINTS & RAW ARRAYS FOR FULL REPRODUCIBILITY & PUBLICATION RENDERING ---
+        chk_dir = os.path.join("checkpoints", pde_key)
+        os.makedirs(chk_dir, exist_ok=True)
+        torch.save(pinn_model.state_dict(), os.path.join(chk_dir, "pinn.pt"))
+        torch.save(pcgrad_model.state_dict(), os.path.join(chk_dir, "pcgrad.pt"))
+        torch.save(cagrad_model.state_dict(), os.path.join(chk_dir, "cagrad.pt"))
+        torch.save(aspinn_model.state_dict(), os.path.join(chk_dir, "atlas.pt"))
+        
+        # Save partition metadata (PyTorch tensor format + human-readable JSON)
+        bw_val = stage1_info["bandwidth"]
+        bw_list = bw_val.cpu().numpy().tolist() if isinstance(bw_val, torch.Tensor) else list(bw_val)
+        torch.save({
+            "num_subspaces": n_sub,
+            "centroids": stage1_info["centroids"].cpu(),
+            "bandwidth": bw_val.cpu() if isinstance(bw_val, torch.Tensor) else bw_val,
+            "cleavage_history": stage1_info.get("cleavage_history", []),
+        }, os.path.join(chk_dir, "atlas_partition.pt"))
+        
+        with open(os.path.join(chk_dir, "atlas_partition.json"), "w") as pf:
+            json.dump({
+                "pde_key": pde_key,
+                "pde_name": pde_name,
+                "num_subspaces": n_sub,
+                "centroids": stage1_info["centroids"].cpu().numpy().tolist(),
+                "bandwidth": bw_list,
+            }, pf, indent=2)
+            
+        # Save raw convergence loss curves
+        conv_dir = os.path.join("results", "data", "convergence")
+        os.makedirs(conv_dir, exist_ok=True)
+        with open(os.path.join(conv_dir, f"{pde_key}_convergence.json"), "w") as cf:
+            json.dump({
+                "pde_key": pde_key,
+                "pde_name": pde_name,
+                "pinn": hist_pinn,
+                "pcgrad": hist_pcg,
+                "cagrad": hist_cag,
+                "atlas": summary_as["history"]
+            }, cf, indent=2)
+        print(f"    [+] Saved Complete Model Checkpoints & Partition Metadata -> {chk_dir}")
+        print(f"    [+] Saved Raw Convergence Trajectories -> {os.path.join(conv_dir, f'{pde_key}_convergence.json')}")
         
         del pinn_model, pcgrad_model, cagrad_model, aspinn_model, trainer
         cleanup_gpu()
