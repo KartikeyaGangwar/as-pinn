@@ -6,6 +6,7 @@ import csv
 import copy
 import gc
 import shutil
+import argparse
 import torch
 import torch.nn as nn
 import numpy as np
@@ -394,14 +395,20 @@ def plot_pou_overlap_profile(pde_key, pde_name, pde, aspinn, stage1_info, save_p
     print(f"    [+] Saved PoU Overlap Profile: {save_path}")
 
 
-def run_master_suite(custom_benchmarks=None):
+def run_master_suite(custom_benchmarks=None, device_str=None, skip_summary_grid=False):
     print("="*105)
     print("      ATLAS: ADAPTIVE N-SUBSPACE PINN — 9-PDE BENCHMARK SUITE")
     print("="*105)
     
     set_seed(42)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if device_str:
+        device = torch.device(device_str)
+    else:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[*] Compute Device: {device} | CUDA Available: {torch.cuda.is_available()}")
+    if device.type == "cuda" and torch.cuda.is_available():
+        dev_idx = device.index if device.index is not None else torch.cuda.current_device()
+        print(f"[*] Active GPU: [{dev_idx}] {torch.cuda.get_device_name(dev_idx)}")
     
     os.makedirs("results/plots", exist_ok=True)
     os.makedirs("results/data", exist_ok=True)
@@ -552,6 +559,10 @@ def run_master_suite(custom_benchmarks=None):
         del pinn_model, pcgrad_model, cagrad_model, aspinn_model, trainer
         cleanup_gpu()
         
+        # Save individual benchmark summary record
+        with open(f"results/data/{pde_key}_summary.json", "w") as f_indiv:
+            json.dump(entry, f_indiv, indent=2)
+
         with open("results/data/master_benchmark_summary.json", "w") as f:
             json.dump(results, f, indent=2)
             
@@ -561,75 +572,76 @@ def run_master_suite(custom_benchmarks=None):
             writer.writeheader()
             writer.writerows(results)
             
-    print("\n>>> Rendering Subspaces Summary Grid Plot Across 9 Benchmarks (3x3)...")
-    fig, axes = plt.subplots(3, 3, figsize=(20, 18))
-    axes_flat = axes.ravel()
-    
-    idx = 0
-    for pde_key, rec in subspace_summary_records.items():
-        ax = axes_flat[idx]
-        num_s = rec["num_subspaces"]
-        c_np = rec["centroids"].cpu().numpy()
-        sigma = rec["bandwidth"]
-        nx, ny = 150, 150
+    if not skip_summary_grid and len(subspace_summary_records) >= 9:
+        print("\n>>> Rendering Subspaces Summary Grid Plot Across 9 Benchmarks (3x3)...")
+        fig, axes = plt.subplots(3, 3, figsize=(20, 18))
+        axes_flat = axes.ravel()
         
-        if pde_key == "burgers1d":
-            b = ((-1, 1), (0, 1))
-            X, Y = np.meshgrid(np.linspace(b[0][0], b[0][1], nx), np.linspace(b[1][0], b[1][1], ny))
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "convection2d":
-            two_pi = float(2.0 * np.pi)
-            X, Y = np.meshgrid(np.linspace(0.0, two_pi, nx), np.linspace(0.0, two_pi, ny))
-            t_c = 0.50 * np.ones_like(X.ravel())
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "quantum_nls":
-            X, Y = np.meshgrid(np.linspace(-3.0, 3.0, nx), np.linspace(-3.0, 3.0, ny))
-            t_c = float(np.pi / 4.0) * np.ones_like(X.ravel())
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "helmholtz2d":
-            X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "high_dim4d":
-            X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
-            zeros = np.zeros_like(X.ravel())
-            t_c = 0.20 * np.ones_like(X.ravel())
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), zeros, zeros, t_c], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "bratu2d":
-            X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "kovasznay":
-            X, Y = np.meshgrid(np.linspace(-0.5, 1.0, nx), np.linspace(-0.5, 1.5, ny))
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "cavity_ns":
-            X, Y = np.meshgrid(np.linspace(0.0, 1.0, nx), np.linspace(0.0, 1.0, ny))
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
-        elif pde_key == "klein_gordon":
-            X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
-            t_c = 0.50 * np.ones_like(X.ravel())
-            pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
+        idx = 0
+        for pde_key, rec in subspace_summary_records.items():
+            ax = axes_flat[idx]
+            num_s = rec["num_subspaces"]
+            c_np = rec["centroids"].cpu().numpy()
+            sigma = rec["bandwidth"]
+            nx, ny = 150, 150
             
-        with torch.no_grad():
-            c_t = rec["centroids"].to(device)
-            diff = pts.unsqueeze(1) - c_t.unsqueeze(0)
-            dist_sq = torch.sum(diff ** 2, dim=-1)
-            logits = -dist_sq / (2.0 * (sigma ** 2) + 1e-8)
-            psi = torch.softmax(logits, dim=-1).cpu().numpy()
-            terr = np.argmax(psi, axis=1).reshape(ny, nx)
+            if pde_key == "burgers1d":
+                b = ((-1, 1), (0, 1))
+                X, Y = np.meshgrid(np.linspace(b[0][0], b[0][1], nx), np.linspace(b[1][0], b[1][1], ny))
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "convection2d":
+                two_pi = float(2.0 * np.pi)
+                X, Y = np.meshgrid(np.linspace(0.0, two_pi, nx), np.linspace(0.0, two_pi, ny))
+                t_c = 0.50 * np.ones_like(X.ravel())
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "quantum_nls":
+                X, Y = np.meshgrid(np.linspace(-3.0, 3.0, nx), np.linspace(-3.0, 3.0, ny))
+                t_c = float(np.pi / 4.0) * np.ones_like(X.ravel())
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "helmholtz2d":
+                X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "high_dim4d":
+                X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
+                zeros = np.zeros_like(X.ravel())
+                t_c = 0.20 * np.ones_like(X.ravel())
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), zeros, zeros, t_c], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "bratu2d":
+                X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "kovasznay":
+                X, Y = np.meshgrid(np.linspace(-0.5, 1.0, nx), np.linspace(-0.5, 1.5, ny))
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "cavity_ns":
+                X, Y = np.meshgrid(np.linspace(0.0, 1.0, nx), np.linspace(0.0, 1.0, ny))
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel()], axis=1), dtype=torch.float32, device=device)
+            elif pde_key == "klein_gordon":
+                X, Y = np.meshgrid(np.linspace(-1.0, 1.0, nx), np.linspace(-1.0, 1.0, ny))
+                t_c = 0.50 * np.ones_like(X.ravel())
+                pts = torch.tensor(np.stack([X.ravel(), Y.ravel(), t_c], axis=1), dtype=torch.float32, device=device)
+                
+            with torch.no_grad():
+                c_t = rec["centroids"].to(device)
+                diff = pts.unsqueeze(1) - c_t.unsqueeze(0)
+                dist_sq = torch.sum(diff ** 2, dim=-1)
+                logits = -dist_sq / (2.0 * (sigma ** 2) + 1e-8)
+                psi = torch.softmax(logits, dim=-1).cpu().numpy()
+                terr = np.argmax(psi, axis=1).reshape(ny, nx)
+                
+            cmap_g = plt.colormaps.get_cmap("tab10" if num_s <= 10 else "tab20")
+            im = ax.contourf(X, Y, terr, levels=np.arange(num_s + 1) - 0.5, cmap=cmap_g)
+            if c_np.shape[1] >= 2:
+                ax.scatter(c_np[:, 0], c_np[:, 1], c="white", edgecolors="black", s=90, marker="o", linewidths=1.5)
+            ax.set_title(f"{rec['pde_name']} ($N^*={num_s}$)", fontweight="bold", fontsize=12)
+            idx += 1
             
-        cmap_g = plt.colormaps.get_cmap("tab10" if num_s <= 10 else "tab20")
-        im = ax.contourf(X, Y, terr, levels=np.arange(num_s + 1) - 0.5, cmap=cmap_g)
-        if c_np.shape[1] >= 2:
-            ax.scatter(c_np[:, 0], c_np[:, 1], c="white", edgecolors="black", s=90, marker="o", linewidths=1.5)
-        ax.set_title(f"{rec['pde_name']} ($N^*={num_s}$)", fontweight="bold", fontsize=12)
-        idx += 1
-        
-    fig.suptitle("ATLAS Autonomous Subspace Partition Architecture Across All 9 Benchmark PDEs", fontsize=18, fontweight="bold", y=0.995)
-    plt.tight_layout()
-    all_sub_path = "results/plots/all_subspaces_summary.png"
-    fig.savefig(all_sub_path, bbox_inches="tight")
-    fig.savefig("manuscript/all_subspaces_summary.png", bbox_inches="tight")
-    plt.close(fig)
-    print(f"  [+] Saved Subspaces Summary Grid: {all_sub_path}")
+        fig.suptitle("ATLAS Autonomous Subspace Partition Architecture Across All 9 Benchmark PDEs", fontsize=18, fontweight="bold", y=0.995)
+        plt.tight_layout()
+        all_sub_path = "results/plots/all_subspaces_summary.png"
+        fig.savefig(all_sub_path, bbox_inches="tight")
+        fig.savefig("manuscript/all_subspaces_summary.png", bbox_inches="tight")
+        plt.close(fig)
+        print(f"  [+] Saved Subspaces Summary Grid: {all_sub_path}")
     
     print("\n" + "="*115)
     print("                              FINAL 4-WAY BENCHMARK SUMMARY (TOTAL LOSS L(Theta))")
@@ -644,7 +656,29 @@ def run_master_suite(custom_benchmarks=None):
         as_str = f"{r['aspinn_loss_total']:.4e} (N*={r['aspinn_subspaces']})"
         print(f"{pde_str:<42} | {pinn_str:<18} | {pcg_str:<18} | {cag_str:<18} | {as_str:<20}")
     print("="*115)
-    print("\n[+] Full results exported to results/data/master_benchmark_summary.json & .csv!")
+    print("\n[+] Results exported to results/data/master_benchmark_summary.json & .csv!")
 
 if __name__ == "__main__":
-    run_master_suite()
+    parser = argparse.ArgumentParser(description="ATLAS Master Benchmark Suite")
+    parser.add_argument("--device", type=str, default=None, help="Device to use, e.g. cuda:0, cuda:1, cpu")
+    parser.add_argument("--pdes", type=str, default=None, help="Comma-separated PDE keys to run")
+    parser.add_argument("--skip-summary-grid", action="store_true", help="Skip rendering 3x3 summary grid")
+    args = parser.parse_args()
+    
+    custom_list = None
+    if args.pdes:
+        pde_map = {
+            "burgers1d": ("burgers1d", "Burgers 1D Shock", Burgers1D, {"epochs": 1000, "lbfgs": 250, "n_int": 8192}),
+            "convection2d": ("convection2d", "2D High-Peclet Convection (beta=10)", HighPecletConvection2D, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+            "quantum_nls": ("quantum_nls", "2D Non-Linear Schrodinger (Quantum NLS)", QuantumNonlinearSchrodinger2D, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+            "helmholtz2d": ("helmholtz2d", "2D High-Frequency Helmholtz (k=4pi)", Helmholtz2D, {"epochs": 2500, "lbfgs": 500, "n_int": 10240}),
+            "high_dim4d": ("high_dim4d", "4D Anisotropic Diffusion", HighDimDiffusion4D, {"epochs": 2500, "lbfgs": 500, "n_int": 30000}),
+            "bratu2d": ("bratu2d", "2D Non-Linear Bratu Thermal Ignition", NonLinearBratu2D, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+            "kovasznay": ("kovasznay", "2D Kovasznay Flow (Re=40)", KovasznayFlow2D, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+            "cavity_ns": ("cavity_ns", "2D Cavity Navier-Stokes (Re=100)", LidDrivenCavityNavierStokes, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+            "klein_gordon": ("klein_gordon", "2D Klein-Gordon Relativistic Wave", KleinGordon2D, {"epochs": 1500, "lbfgs": 350, "n_int": 10240}),
+        }
+        selected_keys = [k.strip() for k in args.pdes.split(",") if k.strip()]
+        custom_list = [pde_map[k] for k in selected_keys if k in pde_map]
+        
+    run_master_suite(custom_benchmarks=custom_list, device_str=args.device, skip_summary_grid=args.skip_summary_grid)
