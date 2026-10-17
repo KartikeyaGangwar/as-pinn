@@ -24,16 +24,38 @@ import matplotlib.pyplot as plt
 
 # ---------------------------------------------------------------------------
 # Configure Matplotlib for exact Nicolas Rougier / CMAME LaTeX Typography
+# Gracefully falls back to bundled Mathtext Computer Modern if LaTeX is absent
 # ---------------------------------------------------------------------------
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    "font.serif": ["Computer Modern Roman", "DejaVu Serif"],
-    "mathtext.fontset": "cm",
-    "font.size": 13,
-    "figure.dpi": 300,
-    "savefig.dpi": 300,
-})
+has_latex = shutil.which("latex") is not None
+if has_latex:
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Computer Modern Roman", "DejaVu Serif"],
+        "mathtext.fontset": "cm",
+        "font.size": 13,
+        "figure.dpi": 300,
+        "savefig.dpi": 300,
+    })
+else:
+    plt.rcParams.update({
+        "text.usetex": False,
+        "font.family": "serif",
+        "font.serif": ["DejaVu Serif", "Times New Roman", "serif"],
+        "mathtext.fontset": "cm",
+        "font.size": 13,
+        "figure.dpi": 300,
+        "savefig.dpi": 300,
+    })
+
+def clean_title(title_str):
+    if has_latex:
+        return title_str
+    # Strip TeX macro wrappers for standard Matplotlib rendering
+    t = title_str.replace(r"\textbf{", "").replace("}", "")
+    t = t.replace(r"\'e", "é").replace(r'\"o', "ö")
+    return t
+
 
 def extract_clean_plot_body(img_path, gap_y=100, pad=10):
     """
@@ -96,7 +118,7 @@ def render_all_publication_composites():
         clean_img = extract_clean_plot_body(img_path, gap_y=95)
         ax.imshow(clean_img)
         ax.axis("off")
-        ax.set_title(s_title, fontsize=14, pad=12)
+        ax.set_title(clean_title(s_title), fontsize=14, pad=12, fontweight="bold")
         
     plt.tight_layout()
     fig.savefig("manuscript/hero_subspaces_summary.png", bbox_inches="tight", dpi=300)
@@ -115,7 +137,7 @@ def render_all_publication_composites():
         clean_img = extract_clean_plot_body(img_path, gap_y=95)
         ax.imshow(clean_img)
         ax.axis("off")
-        ax.set_title(c_title, fontsize=14, pad=12)
+        ax.set_title(clean_title(c_title), fontsize=14, pad=12, fontweight="bold")
         
     plt.tight_layout()
     fig.savefig("manuscript/hero_convergence_summary.png", bbox_inches="tight", dpi=300)
@@ -137,7 +159,7 @@ def render_all_publication_composites():
         clean_img = extract_clean_plot_body(img_path, gap_y=95)
         ax.imshow(clean_img)
         ax.axis("off")
-        ax.set_title(s_title, fontsize=13, pad=10)
+        ax.set_title(clean_title(s_title), fontsize=13, pad=10, fontweight="bold")
         
     plt.tight_layout()
     fig.savefig("manuscript/supp_subspaces_summary.png", bbox_inches="tight", dpi=300)
@@ -155,7 +177,8 @@ def render_all_publication_composites():
         clean_img = extract_clean_plot_body(img_path, gap_y=95)
         ax.imshow(clean_img)
         ax.axis("off")
-        ax.set_title(c_title, fontsize=13, pad=10)
+        ax.set_title(clean_title(c_title), fontsize=13, pad=10, fontweight="bold")
+
         
     plt.tight_layout()
     fig.savefig("manuscript/supp_convergence_summary.png", bbox_inches="tight", dpi=300)
